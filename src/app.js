@@ -10,10 +10,10 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/api", userRoutes);
-app.use("/api", postRoutes);
-app.use("/api", yogaRoutes);
-app.use("/api", workoutRoutes);
+app.use("/", userRoutes);
+app.use("/", postRoutes);
+app.use("/", yogaRoutes);
+app.use("/", workoutRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
