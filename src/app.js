@@ -15,6 +15,11 @@ app.use("/posts", postRoutes);
 app.use("/yogas", yogaRoutes);
 app.use("/workouts", workoutRoutes);
 
+app.get("/", (req, res) => {
+    console.log("임시로 루트 경로로 들어옴");
+    res.send("루트 경로");
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
