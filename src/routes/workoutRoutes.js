@@ -8,10 +8,10 @@ const {
 } = require("../controllers/workoutController");
 const router = express.Router();
 
-router.post("/workouts", addWorkout);
-router.get("/workouts", getWorkouts);
-router.get("/workouts/:exId", getWorkoutById);
-router.put("/workouts/:exId", updateWorkout);
-router.delete("/workouts/:exId", deleteWorkout);
+router.post("/", addWorkout);
+router.get("/", getWorkouts);
+router.get("/:exId", getWorkoutById);
+router.put("/:exId", updateWorkout);
+router.delete("/:exId", deleteWorkout);
 
 module.exports = router;
