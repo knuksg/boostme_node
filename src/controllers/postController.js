@@ -24,6 +24,17 @@ const getPosts = async (req, res) => {
     }
 };
 
+// 특정 유저의 게시물 조회
+const getPostsByUid = async (req, res) => {
+    const { uid } = req.params;
+    try {
+        const [rows] = await db.query("SELECT * FROM posts WHERE uid = ?", [uid]);
+        res.status(200).json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 // 특정 게시물 조회
 const getPostById = async (req, res) => {
     const { postId } = req.params;
@@ -64,4 +75,4 @@ const deletePost = async (req, res) => {
     }
 };
 
-module.exports = { addPost, getPosts, getPostById, updatePost, deletePost };
+module.exports = { addPost, getPosts, getPostsByUid, getPostById, updatePost, deletePost };
