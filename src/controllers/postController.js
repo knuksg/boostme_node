@@ -17,8 +17,17 @@ const addPost = async (req, res) => {
 // 모든 게시물 조회
 const getPosts = async (req, res) => {
     try {
-        const [rows] = await db.query("SELECT * FROM posts");
-        res.status(200).json(rows);
+        const limit = parseInt(req.query.limit) || 10; // 기본값 10
+        const offset = parseInt(req.query.offset) || 0; // 기본값 0
+
+        const countQuery = "SELECT COUNT(*) as total FROM posts";
+        const [countRows] = await db.query(countQuery);
+        const total = countRows[0].total;
+
+        const query = "SELECT * FROM posts ORDER BY datePublished DESC LIMIT ? OFFSET ?";
+        const [rows] = await db.query(query, [limit, offset]);
+
+        res.status(200).json({ total, posts: rows });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -27,9 +36,20 @@ const getPosts = async (req, res) => {
 // 특정 유저의 게시물 조회
 const getPostsByUid = async (req, res) => {
     const { uid } = req.params;
+    const limit = parseInt(req.query.limit) || 10; // 기본값 10
+    const offset = parseInt(req.query.offset) || 0; // 기본값 0
+
     try {
-        const [rows] = await db.query("SELECT * FROM posts WHERE uid = ?", [uid]);
-        res.status(200).json(rows);
+        // 전체 게시물 수 조회
+        const countQuery = "SELECT COUNT(*) as total FROM posts WHERE uid = ?";
+        const [countRows] = await db.query(countQuery, [uid]);
+        const total = countRows[0].total;
+
+        // 페이징된 게시물 조회
+        const query = "SELECT * FROM posts WHERE uid = ? ORDER BY datePublished DESC LIMIT ? OFFSET ?";
+        const [rows] = await db.query(query, [uid, limit, offset]);
+
+        res.status(200).json({ total, posts: rows });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
