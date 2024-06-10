@@ -2,14 +2,14 @@ const db = require("../models/db");
 
 // 사용자 추가
 const addUser = async (req, res) => {
-    console.log(req.body);
-    const { uid, email, username, bio, photo_url } = req.body;
+    const { email, username, bio, photo_url } = req.body;
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
+
     try {
         const [rows] = await db.query(
             "INSERT INTO users (uid, email, username, bio, photo_url) VALUES (?, ?, ?, ?, ?)",
             [uid, email, username, bio, photo_url]
         );
-        console.log(rows);
         res.status(201).json({ uid, email, username, bio, photo_url });
     } catch (err) {
         console.log(err);
@@ -18,18 +18,8 @@ const addUser = async (req, res) => {
 };
 
 // 사용자 정보 조회
-const getUsers = async (req, res) => {
-    try {
-        const [rows] = await db.query("SELECT * FROM users");
-        res.status(200).json(rows);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-// 특정 사용자 조회
-const getUserById = async (req, res) => {
-    const { uid } = req.params;
+const getUser = async (req, res) => {
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
     try {
         const [rows] = await db.query("SELECT * FROM users WHERE uid = ?", [uid]);
         if (rows.length === 0) {
@@ -41,9 +31,9 @@ const getUserById = async (req, res) => {
     }
 };
 
-// 사용자 업데이트
+// 현재 사용자 업데이트
 const updateUser = async (req, res) => {
-    const { uid } = req.params;
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
     const { email, username, bio, photo_url } = req.body;
     try {
         await db.query(
@@ -56,9 +46,9 @@ const updateUser = async (req, res) => {
     }
 };
 
-// 사용자 삭제
+// 현재 사용자 삭제
 const deleteUser = async (req, res) => {
-    const { uid } = req.params;
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
     try {
         await db.query("DELETE FROM users WHERE uid = ?", [uid]);
         res.status(200).json({ message: "User deleted successfully" });
@@ -67,4 +57,4 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { addUser, getUsers, getUserById, updateUser, deleteUser };
+module.exports = { addUser, getUser, updateUser, deleteUser };
