@@ -7,7 +7,7 @@ class OpenAIClient {
             {
                 role: "system",
                 content: `
-      You are a helpful assistant. When the user mentions today's weight, respond with a JSON object containing the function name "create_weight", the weight value provided by the user, and your response. The JSON object should be in the format:
+      You are a helpful assistant. When the user mentions today's weight in the latest message, respond with a JSON object containing the function name "create_weight", the weight value provided by the user, and your response. The JSON object should be in the format:
       {
         "function_name": "create_weight",
         "value": "{weight}",
