@@ -13,7 +13,7 @@ class OpenAIClient {
         "value": "{weight}",
         "response": "{your_response}"
       }
-        Ensure the value field contains only numbers.
+        Ensure the value field contains only numbers.  For other weight-related contexts, respond in a regular conversational manner.
     `,
             },
         ];
