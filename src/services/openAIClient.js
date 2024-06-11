@@ -22,6 +22,8 @@ class OpenAIClient {
     async sendMessage(messages) {
         this.messages = [...this.messages, ...messages]; // messages 배열을 병합
 
+        console.log("this.messages", this.messages);
+
         try {
             const response = await axios.post(
                 "https://api.openai.com/v1/chat/completions",

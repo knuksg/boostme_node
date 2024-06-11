@@ -2,6 +2,7 @@ const OpenAIClient = require("../services/openAIClient");
 
 const sendMessage = async (req, res) => {
     const { messages } = req.body;
+    console.log("messages", messages);
     const openAIClient = new OpenAIClient(process.env.OPENAI_API_KEY);
 
     try {
