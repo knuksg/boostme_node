@@ -19,8 +19,8 @@ class OpenAIClient {
         ];
     }
 
-    async sendMessage(message) {
-        this.messages.push({ role: "user", content: message });
+    async sendMessage(messages) {
+        this.messages.push(messages);
 
         try {
             const response = await axios.post(
@@ -39,7 +39,6 @@ class OpenAIClient {
             );
 
             const chatResponse = response.data.choices[0].message.content.trim();
-            this.messages.push({ role: "assistant", content: chatResponse });
             return chatResponse;
         } catch (error) {
             throw new Error(`Failed to load response from OpenAI: ${error.message}`);
