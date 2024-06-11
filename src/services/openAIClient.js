@@ -13,6 +13,7 @@ class OpenAIClient {
         "value": "{weight}",
         "response": "{your_response}"
       }
+        Ensure the value field contains only numbers.
     `,
             },
         ];
