@@ -26,7 +26,7 @@ const sendMessage = async (req, res) => {
         const response = await openAIClient.sendMessage(message);
 
         res.json({
-            response: response,
+            response: JSON.parse(response),
             assistantId: openAIClient.getAssistantId(),
             threadId: openAIClient.getThreadId(),
         });
