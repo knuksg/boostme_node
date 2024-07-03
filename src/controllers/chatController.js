@@ -61,10 +61,11 @@ const saveConversation = async (req, res) => {
 };
 
 const getConversation = async (req, res) => {
-    const { uid } = req.params;
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
 
     try {
         const [results] = await db.query(`SELECT assistant_id, thread_id FROM user_conversations WHERE uid = ?`, [uid]);
+        console;
         if (results.length > 0) {
             res.status(200).send(results[0]);
         } else {
