@@ -36,7 +36,8 @@ const sendMessage = async (req, res) => {
 };
 
 const saveConversation = async (req, res) => {
-    const { uid, assistantId, threadId } = req.body;
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
+    const { assistantId, threadId } = req.body;
 
     if (!uid || !assistantId || !threadId) {
         return res.status(400).json({ error: "uid, assistantId, and threadId are required" });
