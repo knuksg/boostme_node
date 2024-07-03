@@ -1,14 +1,36 @@
-const OpenAIClient = require("../services/openAIClient");
+const OpenAIAssistantClient = require("../services/OpenAIAssistantClient");
 
 const sendMessage = async (req, res) => {
-    const { messages } = req.body;
-    console.log("messages", messages);
-    const openAIClient = new OpenAIClient(process.env.OPENAI_API_KEY);
+    const { message, assistantId, threadId } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+    }
+
+    const openAIClient = new OpenAIAssistantClient(process.env.OPENAI_API_KEY);
 
     try {
-        const response = await openAIClient.sendMessage(messages);
-        res.json({ response });
+        // assistantId가 제공되면 설정, 아니면 기본값 사용
+        if (assistantId) {
+            openAIClient.setAssistantId(assistantId);
+        }
+
+        // threadId가 제공되면 설정, 아니면 새로 생성
+        if (threadId) {
+            openAIClient.setThreadId(threadId);
+        } else {
+            await openAIClient.createNewThread();
+        }
+
+        const response = await openAIClient.sendMessage(message);
+
+        res.json({
+            response,
+            assistantId: openAIClient.getAssistantId(),
+            threadId: openAIClient.getThreadId(),
+        });
     } catch (error) {
+        console.error("Error in sendMessage:", error);
         res.status(500).json({ error: error.message });
     }
 };
