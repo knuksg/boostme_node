@@ -60,7 +60,7 @@ const saveConversation = async (req, res) => {
 };
 
 const getConversation = async (req, res) => {
-    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
+    const { uid } = req.params;
 
     try {
         const [results] = await pool.query(`SELECT assistant_id, thread_id FROM user_conversations WHERE uid = ?`, [
@@ -69,7 +69,7 @@ const getConversation = async (req, res) => {
         if (results.length > 0) {
             res.status(200).send(results[0]);
         } else {
-            res.status(404).send({ message: "Conversation not found" });
+            res.status(200).send({ assistant_id: null, thread_id: null });
         }
     } catch (error) {
         console.error("Error in getConversation:", error);
