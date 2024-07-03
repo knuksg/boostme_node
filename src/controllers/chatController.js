@@ -35,4 +35,45 @@ const sendMessage = async (req, res) => {
     }
 };
 
-module.exports = { sendMessage };
+const saveConversation = async (req, res) => {
+    const { uid, assistantId, threadId } = req.body;
+
+    if (!uid || !assistantId || !threadId) {
+        return res.status(400).json({ error: "uid, assistantId, and threadId are required" });
+    }
+
+    try {
+        await pool.query(
+            `INSERT INTO user_conversations (uid, assistant_id, thread_id)
+             VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+             assistant_id = VALUES(assistant_id),
+             thread_id = VALUES(thread_id)`,
+            [uid, assistantId, threadId]
+        );
+        res.status(200).send({ message: "Conversation saved successfully" });
+    } catch (error) {
+        console.error("Error in saveConversation:", error);
+        res.status(500).json({ error: "Failed to save conversation" });
+    }
+};
+
+const getConversation = async (req, res) => {
+    const uid = req.uid; // 인증 미들웨어에서 설정된 uid 사용
+
+    try {
+        const [results] = await pool.query(`SELECT assistant_id, thread_id FROM user_conversations WHERE uid = ?`, [
+            uid,
+        ]);
+        if (results.length > 0) {
+            res.status(200).send(results[0]);
+        } else {
+            res.status(404).send({ message: "Conversation not found" });
+        }
+    } catch (error) {
+        console.error("Error in getConversation:", error);
+        res.status(500).json({ error: "Failed to load conversation" });
+    }
+};
+
+module.exports = { sendMessage, saveConversation, getConversation };
