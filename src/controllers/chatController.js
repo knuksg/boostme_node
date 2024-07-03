@@ -1,4 +1,5 @@
 const OpenAIAssistantClient = require("../services/openAIClient");
+const db = require("../models/db");
 
 const sendMessage = async (req, res) => {
     const { message, assistantId, threadId } = req.body;
@@ -44,7 +45,7 @@ const saveConversation = async (req, res) => {
     }
 
     try {
-        await pool.query(
+        await db.query(
             `INSERT INTO user_conversations (uid, assistant_id, thread_id)
              VALUES (?, ?, ?)
              ON DUPLICATE KEY UPDATE
@@ -63,9 +64,7 @@ const getConversation = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        const [results] = await pool.query(`SELECT assistant_id, thread_id FROM user_conversations WHERE uid = ?`, [
-            uid,
-        ]);
+        const [results] = await db.query(`SELECT assistant_id, thread_id FROM user_conversations WHERE uid = ?`, [uid]);
         if (results.length > 0) {
             res.status(200).send(results[0]);
         } else {
