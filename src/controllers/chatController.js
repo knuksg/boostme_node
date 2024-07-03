@@ -1,4 +1,4 @@
-const OpenAIAssistantClient = require("../services/OpenAIAssistantClient");
+const OpenAIAssistantClient = require("../services/openAIClient");
 
 const sendMessage = async (req, res) => {
     const { message, assistantId, threadId } = req.body;
