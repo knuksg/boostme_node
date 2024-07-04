@@ -34,8 +34,8 @@ class OpenAIAssistantClient {
                 name: "Weight Tracker",
                 instructions: `
                     You are a helpful assistant for tracking weight. When the user mentions today's weight,
-                    respond with a JSON object containing the function name "create_weight", the weight value
-                    provided by the user, and your response. The JSON object should be in the format:
+                    respond with a JSON String containing the function name "create_weight", the weight value
+                    provided by the user, and your response. The JSON String should be in the format:
                     {
                         "function_name": "create_weight",
                         "value": "{weight}",
@@ -82,7 +82,15 @@ class OpenAIAssistantClient {
         const assistantMessage = messages.data.find((msg) => msg.role === "assistant");
 
         if (assistantMessage) {
-            return assistantMessage.content[0].text.value;
+            const value = assistantMessage.content[0].text.value;
+            try {
+                // 백틱을 제거하고 JSON 파싱
+                const jsonValue = JSON.parse(value.replace(/```json\n|```/g, ""));
+                return jsonValue;
+            } catch (e) {
+                // If parsing fails, return the value as a string
+                return value;
+            }
         } else {
             throw new Error("No response from assistant.");
         }

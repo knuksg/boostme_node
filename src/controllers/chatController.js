@@ -25,11 +25,23 @@ const sendMessage = async (req, res) => {
 
         const response = await openAIClient.sendMessage(message);
 
-        res.json({
-            response: JSON.parse(response),
-            assistantId: openAIClient.getAssistantId(),
-            threadId: openAIClient.getThreadId(),
-        });
+        if (typeof response === "object") {
+            // If parsedResponse is an object, return specific fields
+            res.json({
+                response: response.response,
+                function_name: response.function_name,
+                value: response.value,
+                assistantId: openAIClient.getAssistantId(),
+                threadId: openAIClient.getThreadId(),
+            });
+        } else {
+            // If parsedResponse is a string, return it as the response
+            res.json({
+                response: response,
+                assistantId: openAIClient.getAssistantId(),
+                threadId: openAIClient.getThreadId(),
+            });
+        }
     } catch (error) {
         console.error("Error in sendMessage:", error);
         res.status(500).json({ error: error.message });
